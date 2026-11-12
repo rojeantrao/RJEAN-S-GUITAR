@@ -1,5 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "echo Using committed static site",
+  "outputDirectory": ".",
   "cleanUrls": true,
   "rewrites": [
     { "source": "/", "destination": "/index.html" }
