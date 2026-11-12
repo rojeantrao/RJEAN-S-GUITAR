@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RJEAN Guitars | Find Your Sound</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Supabase JS client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    /* CSS STYLES */
+    :root {
+      --bg-dark: #121212;
+      --bg-card: #1e1e1e;
+      --bg-light: #2a2a2a;
+      --text-main: #ffffff;
+      --text-muted: #aaaaaa;
+      --accent: #d4af37; /* Gold Accent */
+      --accent-hover: #b89628;
+      --danger: #e74c3c;
+      --border-color: #333333;
+      --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: var(--font-family);
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* Navigation */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background-color: rgba(18, 18, 18, 0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 2rem;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 1px;
+      cursor: pointer;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--accent);
+    }
+
+    .nav-icons {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      color: var(--text-main);
+      font-size: 1.2rem;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .icon-btn:hover {
+      color: var(--accent);
+    }
+
+    .badge {
+      position: absolute;
+      top: -8px;
+      right: -10px;
+      background-color: var(--accent);
+      color: #000;
+      font-size: 0.7rem;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 50%;
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+    }
+
+    .hamburger span {
+      width: 25px;
+      height: 3px;
+      background-color: var(--text-main);
+      border-radius: 2px;
+    }
+
+    /* Page Views */
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    /* Hero Section */
+    .hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .hero-content h1 {
+      font-size: 3rem;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .hero-content h1 span {
+      color: var(--accent);
+    }
+
+    .hero-content p {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      background-color: var(--accent);
+      color: #000;
+      padding: 0.8rem 2rem;
+      font-weight: bold;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .hero-image img {
+      width: 100%;
+      max-height: 400px;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
+    /* Section Container */
+    .section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 50px;
+      height: 3px;
+      background-color: var(--accent);
+      margin: 0.5rem auto 0;
+    }
+
+    /* Categories Grid */
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .category-card {
+      background-color: var(--bg-card);
+      padding: 1.5rem;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .category-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-5px);
+    }
+
+    /* Product Cards */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 2rem;
+    }
+
+    .product-card {
+      background-color: var(--bg-card);
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition);
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--accent);
+    }
+
+    .product-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      background-color: #252525;
+      cursor: pointer;
+    }
+
+    .product-info {
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .product-brand {
+      font-size: 0.8rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .product-name {
+      font-size: 1.1rem;
+      margin: 0.3rem 0;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .product-rating {
+      color: #f1c40f;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .product-price {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      margin-top: auto;
+    }
+
+    .product-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-card {
+      flex-grow: 1;
+      padding: 0.6rem;
+      background-color: var(--accent);
+      color: #000;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-card:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .wishlist-btn {
+      background-color: var(--bg-light);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      width: 38px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .wishlist-btn.active {
+      color: var(--danger);
+      border-color: var(--danger);
+    }
+
+    /* Promotional Banner */
+    .banner {
+      background: linear-gradient(135deg, #1a1a1a 0%, #2a2210 100%);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      text-align: center;
+      padding: 4rem 2rem;
+      margin: 2rem 0;
+    }
+
+    .banner h2 {
+      font-size: 2.5rem;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    /* Shop Section Layout */
+    .shop-container {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 2rem;
+    }
+
+    .filters-sidebar {
+      background-color: var(--bg-card);
+      padding: 1.5rem;
+      border-radius: 8px;
+      height: fit-content;
+      border: 1px solid var(--border-color);
+    }
+
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .filter-group h3 {
+      font-size: 1rem;
+      margin-bottom: 0.8rem;
+      color: var(--accent);
+    }
+
+    .filter-group input, .filter-group select {
+      width: 100%;
+      padding: 0.6rem;
+      background-color: var(--bg-light);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      border-radius: 4px;
+      outline: none;
+    }
+
+    /* Tables */
+    .cart-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2rem;
+    }
+
+    .cart-table th, .cart-table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .cart-summary, .checkout-form {
+      background-color: var(--bg-card);
+      padding: 2rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    /* Form Fields */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
+
+    .form-group.full {
+      grid-column: span 2;
+    }
+
+    .form-group input, .form-group select {
+      padding: 0.8rem;
+      background-color: var(--bg-light);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      border-radius: 4px;
+      outline: none;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.8);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background-color: var(--bg-card);
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      max-width: 800px;
+      width: 100%;
+      padding: 2rem;
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .close-modal:hover {
+      color: var(--accent);
+    }
+
+    .product-detail {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .product-detail-img {
+      width: 100%;
+      border-radius: 8px;
+      background-color: var(--bg-light);
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: var(--accent);
+      color: #000;
+      padding: 1rem 1.5rem;
+      border-radius: 4px;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 3000;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Footer */
+    footer {
+      background-color: #0a0a0a;
+      border-top: 1px solid var(--border-color);
+      padding: 3rem 2rem 1rem;
+      margin-top: 4rem;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .footer-col h3 {
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .footer-col p {
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-col i {
+      color: var(--accent);
+      width: 20px;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* Customer authentication and account */
+    #auth-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      background: radial-gradient(ellipse at top right, #332911 0, var(--bg-dark) 55%);
+    }
+    #auth-screen[hidden], #app-shell[hidden] { display: none; }
+    .auth-card {
+      width: min(100%, 480px);
+      padding: 2.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      box-shadow: 0 24px 70px rgba(0,0,0,.4);
+    }
+    .auth-brand { color: var(--accent); font-weight: 800; letter-spacing: 2px; margin-bottom: 1.5rem; }
+    .auth-card h1 { font-size: 1.8rem; margin-bottom: .4rem; }
+    .auth-intro, .auth-footnote { color: var(--text-muted); margin-bottom: 1.4rem; }
+    .auth-card .form-group input { width: 100%; }
+    .auth-card .btn-primary { width: 100%; margin-top: .5rem; }
+    .auth-switch { text-align: center; margin-top: 1.25rem; color: var(--text-muted); }
+    .auth-switch button { background: none; border: 0; color: var(--accent); cursor: pointer; font: inherit; }
+    .auth-modes { display:flex; gap:.75rem; margin:1.25rem 0; }
+    .auth-mode-button { flex:1; padding:.7rem; color:var(--text-muted); background:var(--bg-light); border:1px solid var(--border-color); border-radius:5px; cursor:pointer; }
+    .auth-mode-button.active { color:#000; background:var(--accent); border-color:var(--accent); font-weight:700; }
+    .auth-message { min-height: 1.5rem; color: var(--accent); margin: .5rem 0; }
+    .auth-message.error { color: #ff8a80; }
+    .account-heading { display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap; }
+    .account-card, .order-card { background:var(--bg-card); border:1px solid var(--border-color); border-radius:8px; padding:1.5rem; margin-bottom:1.25rem; }
+    .account-card h3, .order-card h3 { color:var(--accent); margin-bottom:.75rem; }
+    .account-details { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; color:var(--text-muted); }
+    .order-card p { color:var(--text-muted); margin:.35rem 0; }
+    .nav-account { border:1px solid var(--border-color); border-radius:4px; padding:.45rem .7rem; }
+    .admin-table-wrap { overflow-x:auto; background:var(--bg-card); border:1px solid var(--border-color); border-radius:8px; margin:1rem 0 2rem; }
+    .admin-table { width:100%; min-width:720px; border-collapse:collapse; }
+    .admin-table th, .admin-table td { padding:.9rem 1rem; text-align:left; border-bottom:1px solid var(--border-color); }
+    .admin-table th { color:var(--accent); background:var(--bg-light); }
+    .admin-table tr:last-child td { border-bottom:0; }
+    .admin-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:1rem; margin:1rem 0 2rem; }
+    .admin-stat { background:var(--bg-card); border:1px solid var(--border-color); border-radius:8px; padding:1.25rem; }
+    .admin-stat strong { display:block; font-size:1.5rem; color:var(--accent); }
+
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; text-align: center; }
+      .nav-links {
+        display: none; position: absolute; top: 100%; left: 0;
+        width: 100%; background-color: var(--bg-dark);
+        flex-direction: column; padding: 1.5rem; border-bottom: 1px solid var(--border-color);
+      }
+      .nav-links.active { display: flex; }
+      .hamburger { display: flex; }
+      .shop-container, .product-detail, .form-grid { grid-template-columns: 1fr; }
+      .form-group.full { grid-column: span 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Customer login is required before entering the storefront. -->
+  <section id="auth-screen" aria-labelledby="auth-title">
+    <div class="auth-card">
+      <div class="auth-brand">RJEAN GUITARS</div>
+      <div id="login-panel">
+        <h1 id="auth-title">Welcome back</h1>
+        <p class="auth-intro">Sign in to browse the collection and manage your orders.</p>
+        <div class="auth-modes" role="group" aria-label="Choose sign in type">
+          <button id="customer-mode-button" class="auth-mode-button active" type="button" onclick="setAuthMode('customer')">Customer Login</button>
+          <button id="admin-mode-button" class="auth-mode-button" type="button" onclick="setAuthMode('admin')">Admin Login</button>
+        </div>
+        <form id="login-form" onsubmit="handleLogin(event)">
+          <div class="form-group"><label for="login-email">Email address</label><input id="login-email" type="email" autocomplete="email" required></div>
+          <div class="form-group"><label for="login-password">Password</label><input id="login-password" type="password" autocomplete="current-password" minlength="6" required></div>
+          <p id="login-message" class="auth-message" role="status" aria-live="polite"></p>
+          <button type="submit" id="login-button" class="btn-primary">Customer Sign In</button>
+        </form>
+        <p id="customer-signup-link" class="auth-switch">New to RJEAN? <button type="button" onclick="showAuthPanel('signup')">Create an account</button></p>
+        <p id="admin-login-note" class="auth-footnote" hidden>Admin access is restricted to accounts explicitly approved by the site owner.</p>
+      </div>
+      <div id="signup-panel" hidden>
+        <h1>Create your account</h1>
+        <p class="auth-intro">Keep your customer details and guitar orders together.</p>
+        <form id="signup-form" onsubmit="handleSignup(event)">
+          <div class="form-grid">
+            <div class="form-group"><label for="signup-first">First name</label><input id="signup-first" autocomplete="given-name" required></div>
+            <div class="form-group"><label for="signup-last">Last name</label><input id="signup-last" autocomplete="family-name" required></div>
+            <div class="form-group full"><label for="signup-email">Email address</label><input id="signup-email" type="email" autocomplete="email" required></div>
+            <div class="form-group full"><label for="signup-phone">Phone number</label><input id="signup-phone" type="tel" autocomplete="tel" required></div>
+            <div class="form-group full"><label for="signup-address">Shipping address</label><input id="signup-address" autocomplete="street-address" required></div>
+            <div class="form-group full"><label for="signup-password">Password</label><input id="signup-password" type="password" autocomplete="new-password" minlength="6" required></div>
+          </div>
+          <p id="signup-message" class="auth-message" role="status" aria-live="polite"></p>
+          <button type="submit" id="signup-button" class="btn-primary">Create Account</button>
+        </form>
+        <p class="auth-switch">Already have an account? <button type="button" onclick="showAuthPanel('login')">Sign in</button></p>
+      </div>
+    </div>
+  </section>
+
+  <div id="app-shell" hidden>
+
+  <!-- Navigation -->
+  <header>
+    <div class="navbar">
+      <div class="logo" onclick="switchView('home')">RJEAN GUITARS</div>
+      <ul class="nav-links">
+        <li><a id="nav-home" class="active" onclick="switchView('home')">Home</a></li>
+        <li><a id="nav-shop" onclick="switchView('shop')">Shop</a></li>
+        <li><a id="nav-wishlist" onclick="switchView('wishlist')">Wishlist</a></li>
+        <li><a id="nav-cart" onclick="switchView('cart')">Cart</a></li>
+        <li><a id="nav-account" class="nav-account" onclick="switchView('account')">My Account</a></li>
+        <li id="admin-nav-item" hidden><a id="nav-admin" class="nav-account" onclick="switchView('admin')">Admin Dashboard</a></li>
+      </ul>
+      <div class="nav-icons">
+        <button class="icon-btn" onclick="switchView('wishlist')">
+          <i class="fa-solid fa-heart"></i>
+          <span class="badge" id="wishlist-count">0</span>
+        </button>
+        <button class="icon-btn" onclick="switchView('cart')">
+          <i class="fa-solid fa-cart-shopping"></i>
+          <span class="badge" id="cart-count">0</span>
+        </button>
+        <div class="hamburger" onclick="toggleMobileNav()">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Views -->
+  <main>
+    <!-- HOME VIEW -->
+    <div id="home-view" class="view active">
+      <section class="hero">
+        <div class="hero-content">
+          <h1>Find Your Perfect <span>Tone & Rhythm</span></h1>
+          <p>Explore iconic electric guitars from Fender, Gibson, Fermata, Ibanez, and more crafted for tone seekers.</p>
+          <button class="btn-primary" onclick="switchView('shop')">Shop Collection</button>
+        </div>
+        <div class="hero-image">
+          <img src="Fender Standard Stratocaster.jfif" alt="Featured Guitar">
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Shop by Brand</h2>
+        <div class="categories-grid">
+          <div class="category-card" onclick="filterByBrand('Fender')">
+            <i class="fa-solid fa-guitar fa-2x" style="color:var(--accent); margin-bottom:0.5rem;"></i>
+            <h3>Fender</h3>
+          </div>
+          <div class="category-card" onclick="filterByBrand('Fermata')">
+            <i class="fa-solid fa-guitar fa-2x" style="color:var(--accent); margin-bottom:0.5rem;"></i>
+            <h3>Fermata</h3>
+          </div>
+          <div class="category-card" onclick="filterByBrand('Gibson')">
+            <i class="fa-solid fa-guitar fa-2x" style="color:var(--accent); margin-bottom:0.5rem;"></i>
+            <h3>Gibson</h3>
+          </div>
+          <div class="category-card" onclick="filterByBrand('Ibanez')">
+            <i class="fa-solid fa-guitar fa-2x" style="color:var(--accent); margin-bottom:0.5rem;"></i>
+            <h3>Ibanez</h3>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Featured Guitars</h2>
+        <div class="products-grid" id="home-products"></div>
+      </section>
+
+      <div class="section">
+        <div class="banner">
+          <h2>Upgrade Your Rig Today</h2>
+          <p>Get premium electric guitars with standard warranty and fast delivery.</p>
+          <button class="btn-primary" style="margin-top: 1rem;" onclick="switchView('shop')">Explore Shop</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHOP VIEW -->
+    <div id="shop-view" class="view">
+      <div class="section">
+        <h2 class="section-title">Guitar Shop</h2>
+        <div class="shop-container">
+          <aside class="filters-sidebar">
+            <div class="filter-group">
+              <h3>Search</h3>
+              <input type="text" id="search-input" placeholder="Search model or brand..." oninput="renderShop()">
+            </div>
+            <div class="filter-group">
+              <h3>Brand</h3>
+              <select id="brand-filter" onchange="renderShop()">
+                <option value="All">All Brands</option>
+                <option value="Fender">Fender</option>
+                <option value="Fermata">Fermata</option>
+                <option value="Gibson">Gibson</option>
+                <option value="Yamaha">Yamaha</option>
+                <option value="Ibanez">Ibanez</option>
+                <option value="Squier">Squier</option>
+                <option value="Epiphone">Epiphone</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <h3>Sort By</h3>
+              <select id="sort-filter" onchange="renderShop()">
+                <option value="default">Default</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="rating">Highest Rated</option>
+              </select>
+            </div>
+          </aside>
+          <div class="products-grid" id="shop-products"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WISHLIST VIEW -->
+    <div id="wishlist-view" class="view">
+      <div class="section">
+        <h2 class="section-title">Your Wishlist</h2>
+        <div class="products-grid" id="wishlist-products"></div>
+      </div>
+    </div>
+
+    <!-- CART VIEW -->
+    <div id="cart-view" class="view">
+      <div class="section">
+        <h2 class="section-title">Shopping Cart</h2>
+        <div id="cart-container"></div>
+      </div>
+    </div>
+
+    <!-- CHECKOUT VIEW -->
+    <div id="checkout-view" class="view">
+      <div class="section">
+        <h2 class="section-title">Checkout</h2>
+        <div class="checkout-form">
+          <form id="checkoutForm" onsubmit="handleCheckout(event)">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="co-first">First Name</label>
+                <input type="text" id="co-first" required>
+              </div>
+              <div class="form-group">
+                <label for="co-last">Last Name</label>
+                <input type="text" id="co-last" required>
+              </div>
+              <div class="form-group full">
+                <label for="co-address">Shipping Address</label>
+                <input type="text" id="co-address" placeholder="123 Street, City, Province" required>
+              </div>
+              <div class="form-group">
+                <label for="co-payment">Payment Method</label>
+                <select id="co-payment" required>
+                  <option value="cod">Cash on Delivery</option>
+                  <option value="card">Credit / Debit Card</option>
+                  <option value="gcash">GCash / E-Wallet</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="co-phone">Phone Number</label>
+                <input type="tel" id="co-phone" required>
+              </div>
+            </div>
+            <button type="submit" id="place-order-btn" class="btn-primary" style="width:100%; margin-top:1.5rem;">Place Order</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- CUSTOMER ACCOUNT VIEW -->
+    <div id="account-view" class="view">
+      <div class="section">
+        <div class="account-heading"><h2 class="section-title" style="margin-bottom:1.5rem;">My Account</h2><button class="btn-primary" type="button" onclick="handleLogout()">Sign Out</button></div>
+        <section class="account-card"><h3>Customer information</h3><div id="account-details" class="account-details"></div></section>
+        <section><h2 style="margin:2rem 0 1rem;">Order history</h2><div id="account-orders"><p class="auth-footnote">Loading your orders…</p></div></section>
+      </div>
+    </div>
+
+    <!-- ADMIN VIEW: records are protected by Supabase row-level security. -->
+    <div id="admin-view" class="view">
+      <div class="section">
+        <div class="account-heading"><h2 class="section-title" style="margin-bottom:1.5rem;">Admin Dashboard</h2><button class="btn-primary" type="button" onclick="renderAdminDashboard()">Refresh data</button></div>
+        <p class="auth-footnote">Customer information and orders are visible only to approved administrator accounts.</p>
+        <div id="admin-stats" class="admin-stats"></div>
+        <h2>Customer records</h2>
+        <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Joined</th></tr></thead><tbody id="admin-customers"><tr><td colspan="5">Loading customers…</td></tr></tbody></table></div>
+        <h2>Orders</h2>
+        <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Date</th><th>Customer</th><th>Phone</th><th>Items</th><th>Total</th><th>Status</th></tr></thead><tbody id="admin-orders"><tr><td colspan="6">Loading orders…</td></tr></tbody></table></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Product Detail Modal -->
+  <div class="modal" id="product-modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeModal()">&times;</span>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-col">
+        <h3>RJEAN Guitars</h3>
+        <p>Your one-stop boutique store for electric guitars and classic tone.</p>
+      </div>
+      <div class="footer-col">
+        <h3>Quick Links</h3>
+        <p><a onclick="switchView('home')">Home</a></p>
+        <p><a onclick="switchView('shop')">Shop</a></p>
+        <p><a onclick="switchView('wishlist')">Wishlist</a></p>
+        <p><a onclick="switchView('cart')">Cart</a></p>
+      </div>
+      <div class="footer-col">
+        <h3>Contact Us</h3>
+        <p><i class="fa-solid fa-location-dot"></i> Location: Greenhills, Davao City</p>
+        <p><i class="fa-solid fa-phone"></i> Contact: 09949530708</p>
+        <p><i class="fa-solid fa-envelope"></i> Email: <a href="mailto:rjeans@gmail.com">rjeans@gmail.com</a></p>
+        <p><i class="fa-brands fa-facebook"></i> Facebook: <a href="https://www.facebook.com" target="_blank" style="color: var(--accent);">Rjeans Guitar</a></p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 RJEAN Guitars. All rights reserved.</p>
+    </div>
+  </footer>
+
+  </div><!-- /#app-shell -->
+
+  <script>
+    // ---------------------------------------------------------------
+    // SUPABASE CONNECTION
+    // The publishable key is designed to be used in browser code.
+    // Security comes from Row Level Security policies (see schema.sql).
+    // NEVER put a secret / service_role key in this file.
+    // ---------------------------------------------------------------
+    const SUPABASE_URL = 'https://qawigkrvltspidfrtuzw.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_KWQI1O1ML4S62P4Wx08sdQ_3dltJrRf';
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    let currentUser = null;
+    let customerProfile = null;
+    let authMode = 'customer';
+    let currentUserIsAdmin = false;
+
+    function setAuthMode(mode) {
+      authMode = mode === 'admin' ? 'admin' : 'customer';
+      document.getElementById('customer-mode-button').classList.toggle('active', authMode === 'customer');
+      document.getElementById('admin-mode-button').classList.toggle('active', authMode === 'admin');
+      document.getElementById('login-button').textContent = authMode === 'admin' ? 'Admin Sign In' : 'Customer Sign In';
+      document.getElementById('customer-signup-link').hidden = authMode === 'admin';
+      document.getElementById('admin-login-note').hidden = authMode !== 'admin';
+      setAuthMessage('login', '');
+    }
+
+    function showAuthPanel(panel) {
+      if (panel === 'signup') setAuthMode('customer');
+      document.getElementById('login-panel').hidden = panel !== 'login';
+      document.getElementById('signup-panel').hidden = panel !== 'signup';
+    }
+
+    function setAuthMessage(form, message, isError = false) {
+      const el = document.getElementById(`${form}-message`);
+      if (!el) return;
+      el.textContent = message;
+      el.classList.toggle('error', isError);
+    }
+
+    async function handleLogin(event) {
+      event.preventDefault();
+      const button = document.getElementById('login-button');
+      button.disabled = true;
+      setAuthMessage('login', 'Signing in…');
+      try {
+        const { error } = await sb.auth.signInWithPassword({
+          email: document.getElementById('login-email').value.trim(),
+          password: document.getElementById('login-password').value
+        });
+        if (error) throw error;
+        setAuthMessage('login', 'Signed in successfully.');
+      } catch (error) {
+        setAuthMessage('login', error.message || 'Unable to sign in. Please try again.', true);
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    async function handleSignup(event) {
+      event.preventDefault();
+      const button = document.getElementById('signup-button');
+      button.disabled = true;
+      setAuthMessage('signup', 'Creating your account…');
+      const profile = {
+        first_name: document.getElementById('signup-first').value.trim(),
+        last_name: document.getElementById('signup-last').value.trim(),
+        phone: document.getElementById('signup-phone').value.trim(),
+        address: document.getElementById('signup-address').value.trim()
+      };
+      try {
+        const { data, error } = await sb.auth.signUp({
+          email: document.getElementById('signup-email').value.trim(),
+          password: document.getElementById('signup-password').value,
+          options: { data: profile }
+        });
+        if (error) throw error;
+        if (data.session) {
+          setAuthMessage('signup', 'Account created. Welcome to RJEAN Guitars!');
+        } else {
+          setAuthMessage('signup', 'Account created. Check your email to confirm, then sign in.');
+        }
+      } catch (error) {
+        setAuthMessage('signup', error.message || 'Unable to create your account. Please try again.', true);
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    async function applyAuthSession(session) {
+      currentUser = session?.user || null;
+      const authScreen = document.getElementById('auth-screen');
+      const appShell = document.getElementById('app-shell');
+      if (!currentUser) {
+        customerProfile = null;
+        currentUserIsAdmin = false;
+        document.getElementById('admin-nav-item').hidden = true;
+        authScreen.hidden = false;
+        appShell.hidden = true;
+        return;
+      }
+
+      const { data: membership, error: membershipError } = await sb.from('admin_users').select('id').eq('id', currentUser.id).maybeSingle();
+      currentUserIsAdmin = !membershipError && Boolean(membership);
+      if (authMode === 'admin' && !currentUserIsAdmin) {
+        setAuthMessage('login', 'This account does not have administrator access.', true);
+        authScreen.hidden = false;
+        appShell.hidden = true;
+        currentUser = null;
+        await sb.auth.signOut();
+        return;
+      }
+
+      authScreen.hidden = true;
+      appShell.hidden = false;
+      document.getElementById('admin-nav-item').hidden = !currentUserIsAdmin;
+      await loadCustomerAccount();
+      updateCheckoutFromProfile();
+    }
+
+    async function loadCustomerAccount() {
+      if (!currentUser) return;
+      const { data, error } = await sb.from('profiles').select('*').eq('id', currentUser.id).maybeSingle();
+      if (error) console.warn('Could not load customer profile:', error.message);
+      customerProfile = data || {
+        first_name: currentUser.user_metadata?.first_name || '',
+        last_name: currentUser.user_metadata?.last_name || '',
+        phone: currentUser.user_metadata?.phone || '',
+        address: currentUser.user_metadata?.address || '',
+        email: currentUser.email || ''
+      };
+      customerProfile.email = customerProfile.email || currentUser.email || '';
+      renderAccountDetails();
+    }
+
+    function renderAccountDetails() {
+      const container = document.getElementById('account-details');
+      if (!container || !customerProfile) return;
+      const fullName = `${customerProfile.first_name || ''} ${customerProfile.last_name || ''}`.trim() || 'Customer';
+      container.innerHTML = `<div><strong>Name</strong><br>${escapeHtml(fullName)}</div>
+        <div><strong>Email</strong><br>${escapeHtml(customerProfile.email || '')}</div>
+        <div><strong>Phone</strong><br>${escapeHtml(customerProfile.phone || 'Not provided')}</div>
+        <div><strong>Shipping address</strong><br>${escapeHtml(customerProfile.address || 'Not provided')}</div>`;
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
+    }
+
+    function updateCheckoutFromProfile() {
+      if (!customerProfile) return;
+      const values = {
+        'co-first': customerProfile.first_name,
+        'co-last': customerProfile.last_name,
+        'co-address': customerProfile.address,
+        'co-phone': customerProfile.phone
+      };
+      Object.entries(values).forEach(([id, value]) => {
+        const field = document.getElementById(id);
+        if (field && value) field.value = value;
+      });
+    }
+
+    async function renderAccount() {
+      await loadCustomerAccount();
+      const container = document.getElementById('account-orders');
+      if (!container || !currentUser) return;
+      container.innerHTML = '<p class="auth-footnote">Loading your orders…</p>';
+      const { data, error } = await sb.from('orders')
+        .select('id, items, total, status, created_at')
+        .eq('user_id', currentUser.id)
+        .order('created_at', { ascending: false });
+      if (error) {
+        container.innerHTML = '<p>Order history is unavailable right now. Please try again later.</p>';
+        console.warn('Could not load customer orders:', error.message);
+        return;
+      }
+      if (!data?.length) {
+        container.innerHTML = '<p class="auth-footnote">No orders yet. Your guitar purchases will appear here.</p>';
+        return;
+      }
+      container.innerHTML = data.map(order => {
+        const date = new Date(order.created_at).toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' });
+        const items = Array.isArray(order.items) ? order.items.map(item => `${escapeHtml(item.name)} × ${Number(item.quantity) || 1}`).join(', ') : 'Order details';
+        return `<article class="order-card"><h3>Order ${escapeHtml(String(order.id).slice(0, 8).toUpperCase())}</h3>
+          <p>${escapeHtml(date)} · ${escapeHtml(order.status || 'pending')}</p><p>${items}</p><p><strong>Total: ${formatPrice(Number(order.total))}</strong></p></article>`;
+      }).join('');
+    }
+
+    async function renderAdminDashboard() {
+      if (!currentUserIsAdmin || !currentUser) return;
+      const customersBody = document.getElementById('admin-customers');
+      const ordersBody = document.getElementById('admin-orders');
+      customersBody.innerHTML = '<tr><td colspan="5">Loading customers…</td></tr>';
+      ordersBody.innerHTML = '<tr><td colspan="6">Loading orders…</td></tr>';
+      const [profilesResult, ordersResult] = await Promise.all([
+        sb.from('profiles').select('id, first_name, last_name, email, phone, address, created_at').order('created_at', { ascending: false }),
+        sb.from('orders').select('id, email, first_name, last_name, phone, items, total, status, created_at').order('created_at', { ascending: false })
+      ]);
+      if (profilesResult.error || ordersResult.error) {
+        const message = escapeHtml(profilesResult.error?.message || ordersResult.error?.message || 'Admin data could not be loaded.');
+        customersBody.innerHTML = `<tr><td colspan="5">${message}</td></tr>`;
+        ordersBody.innerHTML = `<tr><td colspan="6">${message}</td></tr>`;
+        return;
+      }
+      const profiles = profilesResult.data || [];
+      const orders = ordersResult.data || [];
+      document.getElementById('admin-stats').innerHTML = `<div class="admin-stat"><strong>${profiles.length}</strong>Customers</div><div class="admin-stat"><strong>${orders.length}</strong>Orders</div><div class="admin-stat"><strong>${formatPrice(orders.reduce((sum, order) => sum + Number(order.total || 0), 0))}</strong>Order value</div>`;
+      customersBody.innerHTML = profiles.length ? profiles.map(profile => {
+        const name = `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 'Customer';
+        const joined = profile.created_at ? new Date(profile.created_at).toLocaleDateString('en-PH') : '—';
+        return `<tr><td>${escapeHtml(name)}</td><td>${escapeHtml(profile.email || '')}</td><td>${escapeHtml(profile.phone || '—')}</td><td>${escapeHtml(profile.address || '—')}</td><td>${escapeHtml(joined)}</td></tr>`;
+      }).join('') : '<tr><td colspan="5">No customer accounts yet.</td></tr>';
+      ordersBody.innerHTML = orders.length ? orders.map(order => {
+        const date = order.created_at ? new Date(order.created_at).toLocaleDateString('en-PH') : '—';
+        const name = `${order.first_name || ''} ${order.last_name || ''}`.trim() || 'Customer';
+        const items = Array.isArray(order.items) ? order.items.map(item => `${item.name} × ${Number(item.quantity) || 1}`).join(', ') : '—';
+        return `<tr><td>${escapeHtml(date)}</td><td>${escapeHtml(name)}<br>${escapeHtml(order.email || '')}</td><td>${escapeHtml(order.phone || '—')}</td><td>${escapeHtml(items)}</td><td>${formatPrice(Number(order.total))}</td><td>${escapeHtml(order.status || 'pending')}</td></tr>`;
+      }).join('') : '<tr><td colspan="6">No orders yet.</td></tr>';
+    }
+
+    async function handleLogout() {
+      const { error } = await sb.auth.signOut();
+      if (error) showToast('Could not sign out. Please try again.');
+    }
+
+    sb.auth.onAuthStateChange((_event, session) => {
+      setTimeout(() => applyAuthSession(session), 0);
+    });
+
+    // FALLBACK PRODUCT DATA (used if Supabase is unreachable or the table is empty)
+    const fallbackProducts = [
+      { id: 1, name: "Fender Player Stratocaster", brand: "Fender", category: "Electric Guitars", price: 42500, rating: 4.8, image: "Fender Standard Stratocaster.jfif", desc: "Classic tone and sleek style. Perfect for stage and studio performance." },
+      { id: 2, name: "Gibson Les Paul Standard", brand: "Gibson", category: "Electric Guitars", price: 145000, rating: 5.0, image: "Gibson Les Paul Standard.jpg", desc: "Iconic sound and sustain. Craftsmanship at its absolute finest." },
+      { id: 3, name: "Yamaha Pacifica 112V", brand: "Yamaha", category: "Electric Guitars", price: 16500, rating: 4.6, image: "Yamaha Pacifica 112V.jfif", desc: "Best-in-class performance for versatile guitar players." },
+      { id: 4, name: "Ibanez RG Standard", brand: "Ibanez", category: "Electric Guitars", price: 28000, rating: 4.7, image: "Ibanez RG Standard.jfif", desc: "Built for speed and high-octane modern metal tone." },
+      { id: 5, name: "Squier Classic Vibe '60s", brand: "Squier", category: "Electric Guitars", price: 24900, rating: 4.5, image: "Squier Classic Vibe '60s.jfif", desc: "A tribute to 1960s Fender innovation with vintage aesthetics." },
+      { id: 6, name: "Epiphone Les Paul Custom", brand: "Epiphone", category: "Electric Guitars", price: 41000, rating: 4.7, image: "Epiphone Les Paul Custom.jfif", desc: "Tuxedo-style elegant design combined with rich humbucking tone." },
+      { id: 7, name: "Fermata ST-1 Pro Stratocaster", brand: "Fermata", category: "Electric Guitars", price: 10200, rating: 4.9, image: "Fermata ST-1 Pro Stratocaster.jfif", desc: "Roasted maple neck, stainless steel frets, and Alnico 5 pickups with coil-split." },
+      { id: 8, name: "Fender Standard Stratocaster", brand: "Fender", category: "Electric Guitars", price: 44000, rating: 4.9, image: "Fender Standard Stratocaster.jfif", desc: "Contoured body with a Modern C neck profile and singing single-coil pickups." },
+      { id: 9, name: "Fender Standard Telecaster", brand: "Fender", category: "Electric Guitars", price: 44000, rating: 4.9, image: "Fender Standard Telecaster.jfif", desc: "Crystal-clear, bright twang with a string-through-body bridge for rock-solid sustain." }
+    ];
+
+    let products = [...fallbackProducts];
+
+    // Load products from Supabase, then re-render the current view
+    async function loadProducts() {
+      try {
+        const { data, error } = await sb
+          .from('products')
+          .select('id, name, brand, category, price, rating, image, description')
+          .order('id', { ascending: true });
+
+        if (error) throw error;
+        if (data && data.length) {
+          products = data.map(r => ({
+            id: r.id,
+            name: r.name,
+            brand: r.brand,
+            category: r.category,
+            price: Number(r.price),
+            rating: Number(r.rating),
+            image: r.image,
+            desc: r.description || ''
+          }));
+        }
+      } catch (err) {
+        console.warn('Supabase products failed, using local data:', err.message || err);
+      }
+      rerenderActiveView();
+    }
+
+    function rerenderActiveView() {
+      const active = document.querySelector('.view.active');
+      if (!active) return;
+      const name = active.id.replace('-view', '');
+      if (name === 'home') renderHome();
+      if (name === 'shop') renderShop();
+      if (name === 'wishlist') renderWishlist();
+      if (name === 'cart') renderCart();
+    }
+
+    let cart = JSON.parse(localStorage.getItem('rjean_cart')) || [];
+    let wishlist = JSON.parse(localStorage.getItem('rjean_wishlist')) || [];
+
+    function saveStorage() {
+      localStorage.setItem('rjean_cart', JSON.stringify(cart));
+      localStorage.setItem('rjean_wishlist', JSON.stringify(wishlist));
+      updateBadges();
+    }
+
+    function updateBadges() {
+      const c = document.getElementById('cart-count');
+      const w = document.getElementById('wishlist-count');
+      if(c) c.textContent = cart.reduce((acc, i) => acc + i.quantity, 0);
+      if(w) w.textContent = wishlist.length;
+    }
+
+    function formatPrice(amt) {
+      return `₱${amt.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      if(toast) {
+        toast.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+      }
+    }
+
+    function switchView(viewName) {
+      if (viewName === 'admin' && !currentUserIsAdmin) {
+        showToast('Administrator access is required.');
+        return;
+      }
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      const targetView = document.getElementById(`${viewName}-view`);
+      if(targetView) targetView.classList.add('active');
+      
+      document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+      const activeNav = document.getElementById(`nav-${viewName}`);
+      if(activeNav) activeNav.classList.add('active');
+
+      window.scrollTo(0, 0);
+
+      if(viewName === 'home') renderHome();
+      if(viewName === 'shop') renderShop();
+      if(viewName === 'cart') renderCart();
+      if(viewName === 'wishlist') renderWishlist();
+      if(viewName === 'account') renderAccount();
+      if(viewName === 'admin') renderAdminDashboard();
+    }
+
+    function toggleMobileNav() {
+      const navLinks = document.querySelector('.nav-links');
+      if(navLinks) navLinks.classList.toggle('active');
+    }
+
+    function filterByBrand(brand) {
+      const brandFilter = document.getElementById('brand-filter');
+      if(brandFilter) brandFilter.value = brand;
+      switchView('shop');
+    }
+
+    function createProductCard(p) {
+      const isWish = wishlist.includes(p.id);
+      return `
+        <div class="product-card">
+          <img src="${p.image}" alt="${p.name}" class="product-image" onclick="openModal(${p.id})">
+          <div class="product-info">
+            <span class="product-brand">${p.brand}</span>
+            <div class="product-name" onclick="openModal(${p.id})">${p.name}</div>
+            <div class="product-rating"><i class="fa-solid fa-star"></i> ${p.rating}</div>
+            <div class="product-price">${formatPrice(p.price)}</div>
+            <div class="product-actions">
+              <button class="btn-card" onclick="addToCart(${p.id})">Add To Cart</button>
+              <button class="wishlist-btn ${isWish ? 'active' : ''}" onclick="toggleWishlist(${p.id})">
+                <i class="fa-solid fa-heart"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderHome() {
+      const homeContainer = document.getElementById('home-products');
+      if(homeContainer) {
+        homeContainer.innerHTML = products.slice(0, 4).map(p => createProductCard(p)).join('');
+      }
+    }
+
+    function renderShop() {
+      const grid = document.getElementById('shop-products');
+      if(!grid) return;
+
+      const searchInput = document.getElementById('search-input');
+      const brandFilter = document.getElementById('brand-filter');
+      const sortFilter = document.getElementById('sort-filter');
+
+      const search = searchInput ? searchInput.value.toLowerCase() : '';
+      const brand = brandFilter ? brandFilter.value : 'All';
+      const sort = sortFilter ? sortFilter.value : 'default';
+
+      let filtered = products.filter(p => {
+        const matchesSearch = p.name.toLowerCase().includes(search) || p.brand.toLowerCase().includes(search);
+        const matchesBrand = brand === 'All' || p.brand === brand;
+        return matchesSearch && matchesBrand;
+      });
+
+      if (sort === 'price-low') filtered.sort((a,b) => a.price - b.price);
+      if (sort === 'price-high') filtered.sort((a,b) => b.price - a.price);
+      if (sort === 'rating') filtered.sort((a,b) => b.rating - a.rating);
+
+      grid.innerHTML = filtered.length ? filtered.map(p => createProductCard(p)).join('') : '<p>No guitars found.</p>';
+    }
+
+    function renderWishlist() {
+      const container = document.getElementById('wishlist-products');
+      if(!container) return;
+
+      const list = products.filter(p => wishlist.includes(p.id));
+      if (list.length === 0) {
+        container.innerHTML = '<p style="grid-column:1/-1; text-align:center;">Your wishlist is empty.</p>';
+      } else {
+        container.innerHTML = list.map(p => createProductCard(p)).join('');
+      }
+    }
+
+    function toggleWishlist(id) {
+      const index = wishlist.indexOf(id);
+      const product = products.find(p => p.id === id);
+
+      if(index > -1) {
+        wishlist.splice(index, 1);
+        showToast(`Removed "${product.name}" from Wishlist`);
+      } else {
+        wishlist.push(id);
+        showToast(`Added "${product.name}" to Wishlist!`);
+      }
+
+      saveStorage();
+      
+      const activeView = document.querySelector('.view.active').id;
+      if(activeView === 'home-view') renderHome();
+      if(activeView === 'shop-view') renderShop();
+      if(activeView === 'wishlist-view') renderWishlist();
+    }
+
+    function addToCart(id, qty = 1) {
+      const product = products.find(p => p.id === id);
+      const existing = cart.find(item => item.id === id);
+      if(existing) {
+        existing.quantity += qty;
+      } else {
+        cart.push({ ...product, quantity: qty });
+      }
+      saveStorage();
+      showToast(`Added "${product.name}" to Cart!`);
+    }
+
+    function changeQty(index, change) {
+      cart[index].quantity += change;
+      if (cart[index].quantity <= 0) cart.splice(index, 1);
+      saveStorage();
+      renderCart();
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cart-container');
+      if(!container) return;
+
+      if (cart.length === 0) {
+        container.innerHTML = '<p style="text-align:center;">Your cart is empty. <a onclick="switchView(\'shop\')" style="color:var(--accent); cursor:pointer;">Go Shopping</a></p>';
+        return;
+      }
+
+      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+      container.innerHTML = `
+        <table class="cart-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${cart.map((item, i) => `
+              <tr>
+                <td>${item.name}</td>
+                <td>${formatPrice(item.price)}</td>
+                <td>
+                  <button class="wishlist-btn" style="display:inline-block; width:28px; height:28px;" onclick="changeQty(${i}, -1)">-</button>
+                  <span style="margin: 0 10px;">${item.quantity}</span>
+                  <button class="wishlist-btn" style="display:inline-block; width:28px; height:28px;" onclick="changeQty(${i}, 1)">+</button>
+                </td>
+                <td>${formatPrice(item.price * item.quantity)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+        <div class="cart-summary">
+          <div class="summary-row">
+            <span>Total:</span>
+            <strong style="color:var(--accent); font-size:1.4rem;">${formatPrice(total)}</strong>
+          </div>
+          <button class="btn-primary" style="width:100%;" onclick="switchView('checkout')">Proceed to Checkout</button>
+        </div>
+      `;
+    }
+
+    function openModal(id) {
+      const p = products.find(item => item.id === id);
+      const modal = document.getElementById('product-modal');
+      const body = document.getElementById('modal-body');
+      
+      if(!p || !modal || !body) return;
+
+      body.innerHTML = `
+        <div class="product-detail">
+          <img src="${p.image}" alt="${p.name}" class="product-detail-img">
+          <div>
+            <span class="product-brand">${p.brand}</span>
+            <h2 style="margin: 0.5rem 0;">${p.name}</h2>
+            <div class="product-rating" style="margin-bottom:1rem;"><i class="fa-solid fa-star"></i> ${p.rating}</div>
+            <p style="color:var(--text-muted); margin-bottom:1.5rem;">${p.desc}</p>
+            <h3 style="color:var(--accent); margin-bottom:1.5rem; font-size:1.6rem;">${formatPrice(p.price)}</h3>
+            <button class="btn-primary" style="width:100%;" onclick="addToCart(${p.id}); closeModal();">Add To Cart</button>
+          </div>
+        </div>
+      `;
+      modal.classList.add('active');
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('product-modal');
+      if(modal) modal.classList.remove('active');
+    }
+
+    // Save the order to Supabase
+    async function handleCheckout(e) {
+      e.preventDefault();
+
+      if (cart.length === 0) {
+        showToast('Your cart is empty.');
+        return;
+      }
+
+      const btn = document.getElementById('place-order-btn');
+      btn.disabled = true;
+      btn.textContent = 'Placing order...';
+
+      // Use current catalog prices where possible
+      const items = cart.map(i => {
+        const live = products.find(p => p.id === i.id) || i;
+        return { product_id: i.id, name: live.name, price: live.price, quantity: i.quantity };
+      });
+      const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+
+      const order = {
+        user_id: currentUser?.id,
+        email: currentUser?.email,
+        first_name: document.getElementById('co-first').value.trim(),
+        last_name: document.getElementById('co-last').value.trim(),
+        address: document.getElementById('co-address').value.trim(),
+        phone: document.getElementById('co-phone').value.trim(),
+        payment_method: document.getElementById('co-payment').value,
+        items: items,
+        total: total
+      };
+
+      try {
+        const { error } = await sb.from('orders').insert(order);
+        if (error) throw error;
+
+        cart = [];
+        saveStorage();
+        document.getElementById('checkoutForm').reset();
+        showToast('Thank you! Your order was placed successfully.');
+        switchView('home');
+      } catch (err) {
+        console.error('Order failed:', err);
+        alert('Sorry, we could not place your order. Please try again.\n\n' + (err.message || ''));
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Place Order';
+      }
+    }
+
+    // Initialize application state
+    document.addEventListener('DOMContentLoaded', async () => {
+      updateBadges();
+      renderHome();
+      loadProducts();
+      const { data, error } = await sb.auth.getSession();
+      if (error) console.warn('Could not restore sign-in session:', error.message);
+      await applyAuthSession(data?.session || null);
+    });
+  </script>
+</body>
+</html>
